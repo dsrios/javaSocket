@@ -26,16 +26,6 @@ public class Server {
     public static void createServer() {
         try {
             socketPort = new ServerSocket(8080);
-            
-            // should be commented
-            /*
-            Socket s = socketPort.accept();//establishes connection   
-            DataInputStream data = new DataInputStream(s.getInputStream());
-            String str = (String) data.readUTF();
-            System.out.println("message= " + str);
-            */
-            
-            // socketPort.close();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -61,6 +51,17 @@ public class Server {
         }
          
         return str;
+    }
+    
+    public static void writeSocketServer(String str){                
+        try {
+            Socket s = socketPort.accept();//establishes connection   
+            DataOutputStream out = new DataOutputStream(s.getOutputStream());
+            out.writeUTF(str);
+            System.out.println("Write socket: "+str);
+        } catch (Exception e) {
+            System.out.println("Error writing socket");
+        }
     }
 
 }

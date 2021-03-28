@@ -23,49 +23,31 @@ public class main {
     public static Boolean flag = true;
     public static void main(String[] args) {        
         JOptionPane.showMessageDialog(null, "Socket Initiallized");
-        crearFile();
-        // writeFile("1234567891", "9");
-        // writeFile("1234567892", "8");
-        // writeFile("1234567893", "7");
-        // writeFile("1234567892", "6");
+        crearFile(); // created file from 0 and insert a testing value
         Server s = new Server();
         s.createServer();
-        System.out.println("This is the balance for account "+readFile("1234567890"));
+        System.out.println("This is the balance for account "+readFile("1234567890")); // testing value inserted
         
-        // int counter = 0;
+       
         while (flag) {
-            // solo permitir 10 lecturas maximo
-            /*if (counter == 9){
-                flag = false;
-            }*/
             String res = s.readSocketServer();
             String[] split = res.split(",");
             try {
                if(res.equals("Close") || flag == false) {
                    System.out.println("Closing server ...");
-                   // System.out.println("Counter "+counter);
+                   s.writeSocketServer("Server closed ...");
                    sleep(1000);
                    flag = false;
                    s.closeServer();  
-               } else if (split[0].equals("Input")) {
-                    writeFile(split[1], split[2]);              
+               } else if (split[0].equals("Input")) {                   
+                    s.writeSocketServer( writeFile(split[1], split[2]));
                } else if (split[0].equals("Find")) {
-                   System.out.println("\nFinding ...\n"+readFile(split[1]));
+                   s.writeSocketServer("\nFinding ...\n"+readFile(split[1]));
                }                              
             } catch (Exception e) {
             }
         }
         System.out.println("Ended");
-        /*
-        try {
-           sleep(10000); 
-           System.out.println("Closing server ...");
-           flag = false;
-           s.closeServer();
-        } catch (Exception e) {
-            s.closeServer();
-        } 
-*/
         
     }
 

@@ -19,8 +19,9 @@ public class Client {
      */
     static Socket server;
     static DataOutputStream dataOut;
-    static String[] choices = {"Input","Find","Close" };
-
+    static DataInputStream dataIn;
+    static String[] choices = {"Input", "Find", "Close"};
+    
     public static void main(String[] args) {
         // loop to read data if is close close the connection
         String answer = "Close";
@@ -29,7 +30,7 @@ public class Client {
             //type,account
             openConnection();
             String response = (String) JOptionPane.showInputDialog(null, null, "Choose an Option", JOptionPane.INFORMATION_MESSAGE, null, choices, choices[0]);
-            
+
             answer = response;
             switch (response) {
                 case "Close":
@@ -48,6 +49,8 @@ public class Client {
                     writeSocket(response.concat(",").concat(accountF));
                     break;
             }
+            
+            readResponseServer();
 
         } while (!answer.equals("Close"));
 
@@ -55,8 +58,7 @@ public class Client {
 
     public static void writeSocket(String text) {
 
-        try {            
-            // dataOut.writeUTF("diego2,1234567893,12COP");
+        try {
             dataOut.writeUTF(text);
             dataOut.flush();
             dataOut.close();
@@ -69,13 +71,8 @@ public class Client {
         try {
             server = new Socket("localhost", 8080);
             dataOut = new DataOutputStream(server.getOutputStream());
+            dataIn = new DataInputStream(server.getInputStream());
 
-//            Socket s = new Socket("localhost", 8080);
-//            DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());
-//            dataOut.writeUTF("diego2,1234567893,12COP");
-//            dataOut.flush();
-//            dataOut.close();
-//            s.close();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -88,5 +85,18 @@ public class Client {
         } catch (Exception e) {
         }
 
+    }
+
+    public static String readResponseServer() {
+        String str = "";
+        try {
+            openConnection();
+            str = (String) dataIn.readUTF();
+            System.out.println("message from server= " + str);
+        } catch (Exception e) {
+            System.out.println("Error reading socket");
+        }
+         
+        return str;
     }
 }
